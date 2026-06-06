@@ -80,5 +80,16 @@ target_include_directories(dans_core INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
+# GLFW: windowing/input/context. Only the static library is vendored; the
+# example, test, and documentation targets are disabled. SYSTEM keeps glfw3.h
+# out of reach of dans_platform_warnings' -Werror flags.
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+if(NOT TARGET glfw)
+  add_subdirectory(vendor/glfw EXCLUDE_FROM_ALL SYSTEM)
+endif()
+
 add_executable(dans_platform app/main.cpp)
-target_link_libraries(dans_platform PRIVATE dans::core dans_platform_warnings)
+target_link_libraries(dans_platform PRIVATE dans::core glfw dans_platform_warnings)
