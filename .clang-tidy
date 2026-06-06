@@ -30,6 +30,10 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.VariableCase
     value: lower_case
+  - key: readability-identifier-naming.ClassMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassMemberSuffix
+    value: '_'
   - key: modernize-use-trailing-return-type.TransformFunctions
     value: true
   - key: modernize-use-trailing-return-type.TransformLambdas
