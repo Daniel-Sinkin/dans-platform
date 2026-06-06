@@ -34,6 +34,10 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.ClassMemberSuffix
     value: '_'
+  - key: readability-identifier-naming.ClassConstantCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassConstantPrefix
+    value: 'k_'
   - key: modernize-use-trailing-return-type.TransformFunctions
     value: true
   - key: modernize-use-trailing-return-type.TransformLambdas
