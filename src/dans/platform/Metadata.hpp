@@ -34,17 +34,23 @@ struct PlatformMetadataGLFW
 };
 [[nodiscard]] inline def to_string(const PlatformMetadataGLFW& md) -> std::string;
 
+struct PlatformMetadataVersion
+{
+    u16 version_major{k_version_major};
+    u16 version_minor{k_version_minor};
+};
+[[nodiscard]] inline def to_string(const PlatformMetadataVersion& md) -> std::string;
+
 struct PlatformMetadata
 {
     PlatformMetadataGLFW glfw{};
-
-    u16 version_major{k_version_major};
-    u16 version_minor{k_version_minor};
+    PlatformMetadataVersion version{};
 };
 [[nodiscard]] inline def to_string(const PlatformMetadata& md) -> std::string;
 }  // namespace dans::platform
 
 DANS_FORMAT_WITH_TO_STRING(dans::platform::PlatformGLFWVersion)
+DANS_FORMAT_WITH_TO_STRING(dans::platform::PlatformMetadataVersion)
 DANS_FORMAT_WITH_TO_STRING(dans::platform::PlatformMetadataGLFW)
 DANS_FORMAT_WITH_TO_STRING(dans::platform::PlatformMetadata)
 
@@ -54,20 +60,25 @@ namespace dans::platform
 {
 [[nodiscard]] inline def to_string(const PlatformGLFWVersion& md) -> std::string
 {
-    return std::format("{}.{}.{}", md.major, md.minor, md.rev);
+    return std::format("({}.{}.{})", md.major, md.minor, md.rev);
 }
 [[nodiscard]] inline def to_string(const PlatformMetadataGLFW& md) -> std::string
 {
     return std::format(
-        "version={},window_system_api={},context_creation_api={},additional_options_or_apis=[{}]",
+        "GLFW(version={},window_system_api={},context_creation_api={},additional_options_or_apis=[{"
+        "}])",
         md.version,
         md.window_system_api,
         md.context_creation_api,
         dans::str::join(md.additional_options_or_apis, ", ")
     );
 }
+[[nodiscard]] inline def to_string(const PlatformMetadataVersion& md) -> std::string
+{
+    return std::format("({},{})", md.version_major, md.version_minor);
+}
 [[nodiscard]] inline def to_string(const PlatformMetadata& md) -> std::string
 {
-    return std::format("glfw={},version={}.{}", md.glfw, md.version_major, md.version_minor);
+    return std::format("PlatformMetadata(\n\t{},\n\tversion={}\n)", md.glfw, md.version);
 }
 }  // namespace dans::platform
