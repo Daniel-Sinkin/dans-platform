@@ -91,6 +91,12 @@ if(NOT TARGET glfw)
   add_subdirectory(vendor/glfw EXCLUDE_FROM_ALL SYSTEM)
 endif()
 
+# glad: OpenGL function loader, generated for GL 3.3 core (see vendor/glad).
+add_library(glad STATIC vendor/glad/src/glad.c)
+target_include_directories(glad SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include)
+
 add_executable(dans_platform app/main.cpp)
 target_include_directories(dans_platform PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_link_libraries(dans_platform PRIVATE dans::core glfw dans_platform_warnings)
+# Let glad own the GL headers; stop glfw3.h from pulling in its own.
+target_compile_definitions(dans_platform PRIVATE GLFW_INCLUDE_NONE)
+target_link_libraries(dans_platform PRIVATE dans::core glfw glad dans_platform_warnings)
