@@ -96,6 +96,16 @@ struct ErrorGLFW
     std::string descr{};
 };
 [[nodiscard]] inline def to_string(const ErrorGLFW&) -> std::string;
+
+[[nodiscard]] inline def get_glfw_error() -> ErrorGLFW
+{
+    const char* descr{};
+    const auto err_code = glfwGetError(&descr);
+    return ErrorGLFW{
+        .code = ErrorGLFWCode{ErrorGLFWCodeE(static_cast<u32>(err_code))},
+        .descr = (descr) ? std::string{descr} : std::string{}
+    };
+}
 }  // namespace dans::platform
 
 DANS_FORMAT_WITH_TO_STRING(dans::platform::ErrorGLFWCode)

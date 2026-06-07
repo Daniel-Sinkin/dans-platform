@@ -63,11 +63,11 @@ template <has_to_string T>
 ///   that names the type, instead of a deep error inside `std::format`.
 ///
 /// ```cpp
-/// namespace dans::platform {
-///     struct Meta { ... };
-///     [[nodiscard]] def to_string(const Meta&) -> std::string;   // or member
-/// }  // namespace dans::platform
+/// struct Meta { ... };
+/// [[nodiscard]] def to_string(const Meta&) -> std::string;
+///
 /// DANS_FORMAT_WITH_TO_STRING(dans::platform::Meta)   // global scope
+/// std::format("meta = {}", meta);
 /// ... std::format("{}", meta);                         // now valid
 /// ```
 #define DANS_FORMAT_WITH_TO_STRING(T)                                                              \

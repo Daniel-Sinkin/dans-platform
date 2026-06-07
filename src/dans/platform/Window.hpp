@@ -3,6 +3,7 @@
 // Externals
 #include <GLFW/glfw3.h>
 #include <dans/development_markers.hpp>
+#include <dans/platform/glfw_types.hpp>
 #include <dans/types.hpp>
 #include <glad/glad.h>
 // StdLib
@@ -151,13 +152,12 @@ class Window
 
     [[nodiscard]] def get_framebuffer_size() const -> std::optional<WindowSize>
     {
-        int* fb_width{};
-        int* fb_height{};
-        glfwGetFramebufferSize(glfw_window_.get(), fb_width, fb_height);
-        if (not fb_width or not fb_height) return std::nullopt;
-        assert(fb_width >= 0 and fb_height >= 0);
+        int fb_width{};
+        int fb_height{};
+        glfwGetFramebufferSize(glfw_window_.get(), &fb_width, &fb_height);
+        if (get_glfw_error().code.is_error()) return std::nullopt;
         return WindowSize{
-            .width = static_cast<u32>(*fb_width), .height = static_cast<u32>(*fb_height)
+            .width = static_cast<u32>(fb_width), .height = static_cast<u32>(fb_height)
         };
     }
     [[nodiscard]] def position_cache_valid() const noexcept -> bool

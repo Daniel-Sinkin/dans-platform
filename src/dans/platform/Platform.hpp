@@ -2,6 +2,7 @@
 #pragma once
 // Internals
 #include <dans/chrono.hpp>
+#include <dans/dev.hpp>
 #include <dans/platform/Metadata.hpp>
 #include <dans/platform/Window.hpp>
 #include <dans/platform/glfw_types.hpp>
@@ -104,43 +105,45 @@ class Platform
         return *windows_.emplace_back(std::make_unique<Window>(cfg));
     }
 
-    def iteration() -> bool
+    def poll_events() -> void
     {
         glfwPollEvents();
         const auto [code, descr] = get_glfw_error();
-        if (code.is_error()) std::println("Got error while polling events: [{}] {}", code, descr);
+        if (code.is_error())
+        {
+            std::println("Got error while polling events: [{}] {}", code, descr);
+        }
+    }
 
-        // Handle window closing
+    def before_render() -> void
+    {
         std::erase_if(windows_, [](const auto& window) { return window->should_close(); });
+    }
 
+    def iteration() -> bool
+    {
         auto any_active = false;
         for (auto& window : windows_)
         {
             any_active = true;
             window->make_active();
+            DANS_DEFER([&] { window->swap_buffers(); });
             window->clear(0.1f, 0.6f, 0.6f);
-            window->swap_buffers();
         }
         return any_active;
     }
     def run() -> void
     {
-        while (iteration())
-            ;
+        for (;;)
+        {
+            poll_events();
+            before_render();
+            if (not iteration()) break;
+        }
     }
 
   private:
     static inline bool exists_{false};
-
-    [[nodiscard]] auto get_glfw_error() -> ErrorGLFW
-    {
-        const char* descr{};
-        const auto err_code = glfwGetError(&descr);
-        return ErrorGLFW{
-            .code = ErrorGLFWCode{ErrorGLFWCodeE(static_cast<u32>(err_code))},
-            .descr = (descr) ? std::string{descr} : std::string{}
-        };
-    }
 
     PlatformMetadata metadata_{};
 
