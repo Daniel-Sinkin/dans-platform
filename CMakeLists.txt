@@ -92,4 +92,5 @@ if(NOT TARGET glfw)
 endif()
 
 add_executable(dans_platform app/main.cpp)
+target_include_directories(dans_platform PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(dans_platform PRIVATE dans::core glfw dans_platform_warnings)
